@@ -2,22 +2,29 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_todo/main.dart';
 import 'package:flutter_todo/models/colors.dart';
+import 'package:flutter_todo/models/todo_model.dart';
+//import 'package:flutter_todo/main.dart' as main;
+
 
 class CreateTask extends StatefulWidget {
-  CreateTask({Key key}) : super(key: key);
+  final Function addTask;
+  CreateTask({Key key, @required this.addTask}) : super(key: key);
 
   @override
-  _CreateTaskState createState() => _CreateTaskState();
+  _CreateTaskState createState() => _CreateTaskState(addTask);
 }
 
-class _CreateTaskState extends State<TodoList> {
+class _CreateTaskState extends State<CreateTask> {
   bool circular = false;
   final _globalkey = GlobalKey<FormState>();
+  //final GlobalKey<TodoListState> _todoListState = GlobalKey<TodoListState>();
   TextEditingController title = TextEditingController();
   TextEditingController description = TextEditingController();
+
+  final Function addTask;
+  _CreateTaskState(this.addTask);
   @override
   Widget build(BuildContext context) {
-    print('context: ${context}');
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: new AppBar(
@@ -39,9 +46,10 @@ class _CreateTaskState extends State<TodoList> {
             ),
             InkWell(
               onTap: () {
-                setState(() {
-                  circular = true;
-                });
+                print('desc: ${description.text} title: ${title.text}');
+                addTask(title.text, description.text);
+                Navigator.pop(context);
+
                 if (_globalkey.currentState.validate()) {
                   Map<String, String> data = {
                     "titleline": title.text,
@@ -71,7 +79,7 @@ class _CreateTaskState extends State<TodoList> {
                   ),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -84,7 +92,7 @@ class _CreateTaskState extends State<TodoList> {
       child: TextFormField(
           style: TextStyle(color: Colors.white),
           controller: title,
-          onChanged: (val) => setState(() => title == val),
+          onChanged: (val) => title == val,
           validator: (value) {
             if (value.isEmpty) return "Title can't be empty";
 
@@ -122,6 +130,7 @@ class _CreateTaskState extends State<TodoList> {
     return TextFormField(
       style: TextStyle(color: Colors.white),
       controller: description,
+      onChanged: (val) => description == val,
       /*validator: (value) {
         if (value.isEmpty) return "About can't be empty";
 

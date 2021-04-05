@@ -24,10 +24,14 @@ class TodoList extends StatefulWidget {
 class TodoListState extends State<TodoList> {
   List<Task> _todoItems = [];
   bool pressed = false;
-  void _addTodoItem(String task) {
-    if (task.length > 0) {
-      final newTask =
-          Task(id: _todoItems.length, createdAt: DateTime.now(), title: task);
+  void _addTodoItem(String title, String description) {
+    print('title: $title, desc: $description');
+    if (title.length > 0) {
+      final newTask = Task(
+          id: _todoItems.length,
+          description: description,
+          createdAt: DateTime.now(),
+          title: title);
       setState(() => _todoItems.add(newTask));
     }
   }
@@ -80,15 +84,16 @@ class TodoListState extends State<TodoList> {
         task.title,
         style: TextStyle(
             fontSize: 21,
+            color: Colors.white,
             decoration: task.isComplete
                 ? TextDecoration.lineThrough
                 : TextDecoration.none),
       ),
       trailing: new IconButton(
-          icon: Icon(Icons.delete_outline, color: Colors.red, size: 30.0),
+          icon: Icon(Icons.delete_outline, color: AppColors.ErroColor, size: 30.0),
           onPressed: () => _promptRemoveTodoItem(index)),
       leading: new IconButton(
-          icon: Icon(Icons.check_circle, color: Colors.green[500], size: 30.0),
+          icon: Icon(Icons.check_circle, color: AppColors.SuccessColor, size: 30.0),
           onPressed: () => _addLinethrough(task)),
       onTap: () => _pushUpdateTodoScreen(task, index),
     );
@@ -107,7 +112,10 @@ class TodoListState extends State<TodoList> {
       floatingActionButton: new FloatingActionButton(
           onPressed: _pushAddTodoScreen,
           tooltip: 'Add task',
-          child: new Icon(Icons.add, color: Colors.black,),
+          child: new Icon(
+            Icons.add,
+            color: Colors.black,
+          ),
           backgroundColor: AppColors.PrimaryColor),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -137,7 +145,17 @@ class TodoListState extends State<TodoList> {
 
   void _pushAddTodoScreen() {
     Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-      return CreateTask();
+      return CreateTask(addTask: (String title, String description) {
+        if (title.length > 0) {
+          final newTask = Task(
+              id: _todoItems.length,
+              description: description,
+              createdAt: DateTime.now(),
+              title: title);
+          print('NEWTASK: ${newTask.title} desc: ${newTask.description}');
+          setState(() => _todoItems.add(newTask));
+        }
+      });
     }));
   }
 

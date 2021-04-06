@@ -121,28 +121,6 @@ class TodoListState extends State<TodoList> {
     );
   }
 
-/*  void _pushAddTodoScreen() {
-    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-      return new Scaffold(
-          appBar: new AppBar(
-              title: new Text('Lisää uusi tehtävä',
-                  style: TextStyle(fontSize: 25)),
-              centerTitle: true,
-              backgroundColor: Colors.black54),
-          body: new TextField(
-            autofocus: true,
-            onSubmitted: (val) {
-              _addTodoItem(val);
-              Navigator.pop(context); // Close the add todo screen
-            },
-            decoration: new InputDecoration(
-                fillColor: Colors.white,
-                hintText: 'Lisää tehtävä...',
-                contentPadding: const EdgeInsets.all(18.0)),
-          ));
-    }));
-  } */
-
   void _pushAddTodoScreen() {
     Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
       return CreateTask(addTask: (String title, String description) {
@@ -152,7 +130,6 @@ class TodoListState extends State<TodoList> {
               description: description,
               createdAt: DateTime.now(),
               title: title);
-          print('NEWTASK: ${newTask.title} desc: ${newTask.description}');
           setState(() => _todoItems.add(newTask));
         }
       });
@@ -160,31 +137,18 @@ class TodoListState extends State<TodoList> {
   }
 
   void _pushUpdateTodoScreen(task, index) {
+
     Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-      return new Scaffold(
-          appBar: new AppBar(
-              title: new Text(task.title, style: TextStyle(fontSize: 23)),
-              centerTitle: true,
-              backgroundColor: Colors.black54),
-          body: new TextFormField(
-            validator: (value) {
-              print('value: $value');
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-            autofocus: true,
-            initialValue: task.title,
-            onChanged: (e) => setState(() => _todoItems[index].title = e),
-            onFieldSubmitted: (task) {
-              Navigator.pop(context);
-            },
-            decoration: new InputDecoration(
-                fillColor: Colors.white,
-                hintText: 'Lisää tehtävä...',
-                contentPadding: const EdgeInsets.all(18.0)),
-          ));
+      return CreateTask(updateTask: (String title, String description) {
+        if (title.length > 0) {
+          setState(() => {
+          _todoItems[index].title = title, 
+          _todoItems[index].description = description
+          }  );
+        }
+      },
+      task: task);
     }));
   }
+
 }

@@ -3,32 +3,45 @@ import 'package:flutter/material.dart';
 import 'package:flutter_todo/main.dart';
 import 'package:flutter_todo/models/colors.dart';
 import 'package:flutter_todo/models/todo_model.dart';
-//import 'package:flutter_todo/main.dart' as main;
 
 
 class CreateTask extends StatefulWidget {
   final Function addTask;
-  CreateTask({Key key, @required this.addTask}) : super(key: key);
+  final Function updateTask;
+  Task task;
+  CreateTask({Key key, this.addTask, this.updateTask, this.task}) : super(key: key);
 
   @override
-  _CreateTaskState createState() => _CreateTaskState(addTask);
+  _CreateTaskState createState() => _CreateTaskState(addTask, updateTask, task);
 }
 
 class _CreateTaskState extends State<CreateTask> {
   bool circular = false;
   final _globalkey = GlobalKey<FormState>();
-  //final GlobalKey<TodoListState> _todoListState = GlobalKey<TodoListState>();
   TextEditingController title = TextEditingController();
   TextEditingController description = TextEditingController();
 
   final Function addTask;
-  _CreateTaskState(this.addTask);
+  final Function updateTask;
+  Task task;  
+
+  _CreateTaskState(this.addTask, this.updateTask, this.task);
+
+  @override
+  void initState() {
+    super.initState();
+    if(task != null) {
+        title.text = task.title;
+        description.text = task.description != null ?  task.description : ''; 
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: new AppBar(
-          title: new Text('Lisää uusi tehtävä', style: TextStyle(fontSize: 23)),
+          title: new Text(task != null ? task.title : 'Lisää uusi tehtävä', style: TextStyle(fontSize: 23)),
           centerTitle: true,
           backgroundColor: Colors.black54),
       body: Form(
@@ -46,7 +59,10 @@ class _CreateTaskState extends State<CreateTask> {
             ),
             InkWell(
               onTap: () {
-                print('desc: ${description.text} title: ${title.text}');
+                if(task != null){
+                  updateTask(title.text, description.text);
+                  Navigator.pop(context);
+                }
                 addTask(title.text, description.text);
                 Navigator.pop(context);
 

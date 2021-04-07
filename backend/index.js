@@ -1,12 +1,15 @@
-const express = require('express')
+import express from 'express'
 const app = express()
-const cors = require('cors')
-const pool = require('./config/db')
+import cors from 'cors'
+import pool from './config/db.js'
+import taskRoutes from './routes/taskRoutes.js'
 
 const port = process.env.port || 5000;
 
 app.use(cors())
 app.use(express.json())
+
+app.use('/tasks', taskRoutes);
 
 app.listen(5000, () => console.log(`Server is running at port ${port}`))
 

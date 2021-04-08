@@ -1,4 +1,4 @@
-CREATE DATABASE perntask;
+CREATE DATABASE tasks;
 
 CREATE TABLE task(
     task_id SERIAL PRIMARY KEY,

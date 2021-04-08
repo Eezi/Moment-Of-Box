@@ -1,9 +1,7 @@
 import express from 'express'
-const app = express()
 import cors from 'cors'
-import pool from './config/db.js'
-import taskRoutes from './routes/taskRoutes.js'
 
+const app = express()
 const port = process.env.port || 5000;
 
 app.use(cors())

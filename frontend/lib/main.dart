@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todo/models/todo_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_todo/blocs/tasks/tasks_state.dart';
+import 'package:flutter_todo/models/task_model.dart';
 import 'package:flutter_todo/models/colors.dart';
 import 'package:flutter_todo/screens/taskEditor.dart';
+
+import 'blocs/tasks/tasks_bloc.dart';
 
 void main() => runApp(new TodoApp());
 
 class TodoApp extends StatelessWidget {
+  final TasksBloc tasksBloc = TasksBloc();
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return BlocBuilder<TasksBloc, TasksState>(
+    bloc: tasksBloc,
+    builder: (context, state) {
+      return new MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Tehtävälista',
       home: new TodoList(),
     );
+    });
   }
 }
 
@@ -24,24 +33,13 @@ class TodoList extends StatefulWidget {
 class TodoListState extends State<TodoList> {
   List<Task> _todoItems = [];
   bool pressed = false;
-  void _addTodoItem(String title, String description) {
-    print('title: $title, desc: $description');
-    if (title.length > 0) {
-      final newTask = Task(
-          id: _todoItems.length,
-          description: description,
-          createdAt: DateTime.now(),
-          title: title);
-      setState(() => _todoItems.add(newTask));
-    }
-  }
 
   void _removeTodoItem(int index) {
     setState(() => _todoItems.removeAt(index));
   }
 
   void _addLinethrough(Task task) {
-    setState(() => task.isComplete = !task.isComplete);
+    setState(() => task.isCompleted = !task.isCompleted);
   }
 
   void _promptRemoveTodoItem(int index) {
@@ -85,7 +83,7 @@ class TodoListState extends State<TodoList> {
         style: TextStyle(
             fontSize: 21,
             color: Colors.white,
-            decoration: task.isComplete
+            decoration: task.isCompleted
                 ? TextDecoration.lineThrough
                 : TextDecoration.none),
       ),
@@ -101,6 +99,7 @@ class TodoListState extends State<TodoList> {
 
   @override
   Widget build(BuildContext context) {
+
     return new Scaffold(
       backgroundColor: Colors.black,
       appBar: new AppBar(
@@ -126,7 +125,7 @@ class TodoListState extends State<TodoList> {
       return CreateTask(addTask: (String title, String description) {
         if (title.length > 0) {
           final newTask = Task(
-              id: _todoItems.length,
+              id: _todoItems.length.toString(),
               description: description,
               createdAt: DateTime.now(),
               title: title);

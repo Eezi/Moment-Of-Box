@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_todo/main.dart';
 import 'package:flutter_todo/models/colors.dart';
-import 'package:flutter_todo/models/todo_model.dart';
+import 'package:flutter_todo/models/task_model.dart';
 
 
 class CreateTask extends StatefulWidget {
